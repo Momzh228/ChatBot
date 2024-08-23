@@ -31,7 +31,11 @@
   <artifactId>telegrambots-spring-boot-starter</artifactId>
 <version>6.9.7.1</version>
 </dependency>
-
+  <dependency>
+    <groupId>org.jsoup</groupId>
+    <artifactId>jsoup</artifactId>
+    <version>1.14.3</version> <!-- Проверьте последнюю версию на сайте Jsoup -->
+  </dependency>
 
 </dependencies>
 </project>
