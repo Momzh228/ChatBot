@@ -1,24 +1,21 @@
 package org.hackaton.bot;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+@Service
+public class SearchBotService extends TelegramLongPollingBot {
 
-public class SearchBot extends TelegramLongPollingBot {
-    private final String name;
-    private final String token;
+    @Value("${telegram.bot.token}")
+    private String botToken;
 
-    public SearchBot(String name, String token) throws TelegramApiException {
-        this.name = name;
-        this.token = token;
-        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        botsApi.registerBot(this);
-    }
-
+    @Value("${telegram.bot.username}")
+    private String botUsername;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -35,15 +32,13 @@ public class SearchBot extends TelegramLongPollingBot {
             }
         }
     }
-
-
     @Override
     public String getBotUsername() {
-        return name;
+        return botUsername;
     }
 
     @Override
     public String getBotToken() {
-        return token;
+        return botToken;
     }
 }
