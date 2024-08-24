@@ -1,12 +1,15 @@
-package org.hakaton.chatbot.search;
+package org.hackaton.search;
 
+import org.hackaton.ai.AiAnswer;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -15,16 +18,20 @@ import java.net.URLEncoder;
 
 @Component
 public class SearchService {
-//    @Value("${google.apiKey}")
-    private String apiKey = "AIzaSyDCpwRkaV0zOjxUEjAtWDweVwZwrhOX-hE";
+    @Value("${google.apiKey}")
+    private String apiKey;
 
-//    @Value("${google.searchEngineId}")
-    private String searchEngineId = "b219cd05d084b4c38";
+    @Value("${google.searchEngineId}")
+    private String searchEngineId;
     private final Integer num = 1;
-    private  String query;
+    private final AiAnswer aiAnswer;
+    @Autowired
+
+    public SearchService(AiAnswer aiAnswer) {
+        this.aiAnswer = aiAnswer;
+    }
 
     public String search(String query) {
-        this.query = query;
         String encodedQuery = encodeQuery(query);
         String urlString = buildUrl(encodedQuery);
 
@@ -82,11 +89,16 @@ public class SearchService {
         if (items != null && !items.isEmpty()) {
             JSONObject item = items.getJSONObject(0);
             String link = item.optString("link", "Нет ссылки");
-            String context = new WikiParser().parseHtml(link, query);
-            results.append(context).append("\n");
+            String context = new HtmlParser().parseHtml(link);
+            String answer;
+            try {
+                 answer = aiAnswer.sentMessage(context);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+            results.append(answer).append("\n");
             results.append("Link: ").append(link).append("\n");
         }
         return results.toString();
     }
 }
-

@@ -1,9 +1,10 @@
-package org.hakaton.chatbot.chatai;
+package org.hackaton.ai;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hakaton.chatbot.auth.Authorization;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,16 +13,23 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 
-public class ChatAi {
+@Component
+public class AiAnswer {
 
-    private final Authorization auth = new Authorization();
+
+    private final AiToken aiToken;
     private String token;
 
-    public ChatAi() throws IOException, InterruptedException {
-        token = auth.createToken();
+    @Autowired
+    public AiAnswer(AiToken aiToken) {
+        this.aiToken = aiToken;
+        initializeToken();
     }
+     private void initializeToken(){
+         token = aiToken.createToken();
+     }
 
-    public static String extractMessageContent(String jsonResponse) throws JsonProcessingException {
+    public  String extractMessageContent(String jsonResponse) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = mapper.readTree(jsonResponse);
         JsonNode choicesArray = rootNode.get("choices");
@@ -60,10 +68,10 @@ public class ChatAi {
         if (response.statusCode() == 200) {
             return extractMessageContent(response.body());
         } else if (response.statusCode() == 401) {
-            return token = auth.createToken();
+            initializeToken();
+            return null;
         } else {
             throw new RuntimeException("Failed : HTTP error code1 : " + response.statusCode());
         }
     }
-
 }
