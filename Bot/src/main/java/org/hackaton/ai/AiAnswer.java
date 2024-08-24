@@ -15,8 +15,6 @@ import java.net.http.HttpResponse;
 
 @Component
 public class AiAnswer {
-
-
     private final AiToken aiToken;
     private String token;
 

@@ -1,6 +1,7 @@
 package org.hackaton.ai;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -11,8 +12,10 @@ import java.net.http.HttpResponse;
 
 @Component
 public class AiToken {
-    private final String RQ_ID = "24ecd146-b082-4752-92ed-54528d828624";
-    private final String AUTH_HEADER = "Basic ZmJmNDE1Y2YtYWZjZS00NDVjLTllZTMtOTgyYzBjZTNjYTg0OjI0ZWNkMTQ2LWIwODItNDc1Mi05MmVkLTU0NTI4ZDgyODYyNA==";
+    @Value("${rq.id}")
+    private  String RQ_ID;
+    @Value("${authentication.header}")
+    private final String AUTH_HEADER = "";
 
     public String createToken()  {
         HttpClient client = HttpClient.newHttpClient();
