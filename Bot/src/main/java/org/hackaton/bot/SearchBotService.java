@@ -1,5 +1,6 @@
 package org.hackaton.bot;
 
+import org.hackaton.search.AlSearchService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -22,7 +23,8 @@ public class SearchBotService extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
-            sendMessage(chatId, "alo");
+            System.out.println( new AlSearchService().getToken());
+            sendMessage(chatId, "yo");
         }
     }
     private void sendMessage(long chatId, String text) {
@@ -41,4 +43,8 @@ public class SearchBotService extends TelegramLongPollingBot {
         return botUsername;
     }
 
+    @Override
+    public String getBotToken() {
+        return botToken;
+    }
 }
